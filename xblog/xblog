@@ -1,0 +1,122 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+'''
+Usage:
+    xblog create [<name>]
+    xblog build [--public]
+    xblog new <title>
+    xblog clean
+    xblog publish
+'''
+
+
+import os
+import docopt
+import datetime
+from xblog.misc import utils
+from xblog.misc.post import Post
+
+
+def create(args):
+    blog_dir = '.'
+    if args['<name>'] is not None:
+        blog_dir = os.path.join('.', args['<name>'])
+
+    if not os.path.exists(blog_dir):
+        utils.mk_dir(blog_dir)
+
+
+    # Create `posts` directory to put posts
+    utils.mk_dir(os.path.join(blog_dir, 'posts'))
+    utils.mk_dir(os.path.join(blog_dir, 'posts', 'imgs'))
+
+    # Create `theme` directory
+    #  print(os.path.abspath(__file__))
+    resource_dir = os.path.join(utils.find_package_dir(), 'theme')
+    utils.copy_dir(resource_dir, os.path.join(blog_dir, 'theme'))
+
+    # Create `config` file
+    utils.move_file(os.path.join(blog_dir, 'theme', 'config.json'),
+                    os.path.join(blog_dir, 'config.json'))
+
+
+def build_site(args):
+    #
+    # We put the arguments passed from the command into the config object
+    #
+    config = utils.load_json('./config.json')
+    config['args'] = args
+
+    site_dir = config['site_dir']
+    if not os.path.exists(site_dir):
+        utils.mk_dir(site_dir)
+    utils.mk_dir(os.path.join(site_dir, 'posts'))
+    utils.mk_dir(os.path.join(site_dir, 'posts', 'private'))
+    utils.mk_dir(os.path.join(site_dir, 'posts', 'public'))
+
+    posts = Post.generatePosts(config)
+
+    home_template = utils.load_template(config['theme']['home'])
+    home_html = home_template.render(config=config,
+                                     posts=posts)
+    utils.save_file(os.path.join('.', 'home.html'), home_html)
+
+    post_dir = config['post_dir']
+    utils.copy_dir(from_path=os.path.join(post_dir, 'imgs'),
+                   to_path=os.path.join(site_dir, 'imgs'))
+    utils.copy_dir(from_path='./theme/static',
+                   to_path=os.path.join(site_dir, 'static'))
+
+
+def new_post(title):
+    today = datetime.datetime.today()
+    name = title.lower().strip().replace(' ', '-')
+    filename = "{}_{:0>2}_{:0>2}_{}.md".format(today.year,
+                                               today.month,
+                                               today.day,
+                                               name)
+    config = utils.load_json('./config.json')
+    fpath = os.path.join(config['post_dir'], filename)
+    if os.path.exists(fpath):
+        print(filename, 'exists!!!')
+        return
+    post_meta = ('---\n'
+                 'tag: post\n'
+                 'type: private\n'
+                 '---\n'
+                 '\n')
+    with open(fpath, 'w') as fp:
+        fp.writelines(post_meta)
+        fp.writelines(['## ', title])
+
+    print("File created -> ", fpath)
+
+
+def clean():
+    config = utils.load_json('./config.json')
+    utils.clean_dir(config['site_dir'])
+    utils.rm_file(os.path.join('.', 'home.html'))
+
+
+def publish():
+    branch = utils.git_branch()
+    if branch != 'public':
+        print('Publishing is ONLY allowed under `public` branch')
+        return
+
+
+if __name__ == "__main__":
+    args = docopt.docopt(__doc__)
+    if args['create']:
+        create(args)
+    elif args['build']:
+        build_site(args)
+    elif args['new']:
+        new_post(args['<title>'])
+    elif args['clean']:
+        clean()
+    elif args['publish']:
+        publish()
+    else:
+        pass

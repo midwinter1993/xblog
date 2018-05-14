@@ -1,0 +1,13 @@
+{
+    "post_dir": "./posts",
+    "site_dir": "./site",
+    "title": "CDJ's talking",
+    "brands": {
+        "Github": "https://github.com/midwinter1993"
+    },
+    "theme": {
+        "header": "./theme/header.html",
+        "home": "./theme/home.html",
+        "post": "./theme/post.html"
+    }
+}
