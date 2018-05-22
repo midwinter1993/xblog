@@ -1,10 +1,8 @@
-body {
+.list-group {
     font-family: STFangSong, Helvetica, Arial, Vernada,
                  Tahoma, STXihei, "Microsoft YaHei",
                  "Songti SC", SimSun, Heiti, sans-serif;
-    font-size: 18px;
-}
-
-.list-group {
+    /* font-size: 18px; */
     font-size: 25px;
 }
+

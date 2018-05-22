@@ -71,7 +71,7 @@ def build_site(args):
 
 def new_post(title):
     today = datetime.datetime.today()
-    name = title.lower().strip().replace(' ', '-')
+    name = title.strip().replace(' ', '-')
     filename = "{}_{:0>2}_{:0>2}_{}.md".format(today.year,
                                                today.month,
                                                today.day,
