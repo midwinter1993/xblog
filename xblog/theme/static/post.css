@@ -1,3 +1,9 @@
+.post {
+  padding: 2% 8% 4% 8%;
+  border: 1px solid LightGrey;
+  border-radius: 5px;
+}
+
 P {
   line-height: 1.6;
 }
@@ -69,17 +75,17 @@ code {
 }
 
 
-a {
-    text-decoration: none;
-    cursor: crosshair;
-    border-bottom: 1px dashed orange;
-    color: #930ee4;
-}
+/* a { */
+    /* text-decoration: none; */
+    /* cursor: crosshair; */
+    /* border-bottom: 1px dashed orange; */
+    /* color: #930ee4; */
+/* } */
 
 
-a:hover {
-	background-color: LightGrey;
-}
+/* a:hover { */
+	/* background-color: LightGrey; */
+/* } */
 
 img {
     width: 90%;

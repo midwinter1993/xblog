@@ -11,14 +11,18 @@
   <body>
     {% include './header.html' %}
 
-    <div class="main-container" >
-      <ul class="list-group">
-        {% for post in posts %}
-          <li class="list-group-item">
-            <a href={{ post.relative_path() }}>{{ post.title() }}</a>
-          </li>
-        {% endfor %}
-      </ul>
+    <div class="container" >
+      <div class="row">
+        <div class="col-sm">
+          <ul class="list-group">
+            {% for post in posts %}
+            <li class="list-group-item">
+              <a href={{ post.relative_path() }}>{{ post.title() }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
     </div>
   </body>
 </html>

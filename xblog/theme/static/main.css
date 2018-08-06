@@ -1,25 +1,14 @@
 body {
-    font-family:"lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-    /* font-family: STFangSong, Helvetica, Arial, Vernada, */
-                 /* Tahoma, STXihei, "Microsoft YaHei", */
-                 /* "Songti SC", SimSun, Heiti, sans-serif; */
-    font-size: 18px;
+  font-family:"lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  /* font-family: STFangSong, Helvetica, Arial, Vernada, */
+  /* Tahoma, STXihei, "Microsoft YaHei", */
+  /* "Songti SC", SimSun, Heiti, sans-serif; */
+  font-size: 18px;
+  min-height: 2000px;
+  padding-top: 70px;
 }
 
 .navbar-brand {
   font-size: 20px;
   margin: 0 3px;
-}
-
-.main-container {
-  /* font-size: 20px; */
-  /* padding: 0; */
-
-  margin-top: 70px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 60%;
-  padding: 2% 8% 4% 8%;
-  border: 1px solid LightGrey;
-  border-radius: 5px;
 }
