@@ -21,24 +21,19 @@ class Post(object):
         elif len(lst) == 3:
             self.name_ = '_'.join(lst)
         else:
-            raise utils.XExecption('Invalid post name [%s].' % post_path)
+            raise utils.XExecption('Invalid post name `%s`.' % post_path)
 
-        self._render()
+        if self.need_render():
+            self._render()
 
     def title(self):
         return self.name_.replace('-', ' ')
 
-    def is_private(self):
-        return self.meta().get('type', 'private') == 'private'
+    def md_path(self):
+        return self.path_
 
-    def is_public(self):
-        return not self.is_private()
-
-    def relative_path(self):
-        if self.is_private():
-            return os.path.join('site', 'posts', 'private', self.htmlname())
-        else:
-            return os.path.join('site', 'posts', 'public', self.htmlname())
+    def html_path(self):
+        return os.path.join('site', 'posts', self.htmlname())
 
     def filename(self):
         return self.name_
@@ -50,18 +45,28 @@ class Post(object):
         return self.meta_
 
     def content(self):
+        # Interface for jinja2 template
         return self.rendered_md_
 
     def html(self):
         return self.html_content_
 
-    def date(self):
+    def post_date(self):
         # post name: yy_mm_dd_name1-name2-name3
         base_path = utils.base_name(self.path_)
         date = list(map(int, base_path.split('_')[:3]))
         return datetime.datetime(date[0], date[1], date[2])
 
+    def need_render(self):
+        if not os.path.exists(self.html_path()):
+            return True
+        html_mod_tsc = utils.file_mod_tsc(self.html_path())
+        md_mod_tsc = utils.file_mod_tsc(self.md_path())
+
+        return html_mod_tsc < md_mod_tsc
+
     def _render(self):
+        assert self.need_render()
 
         self.rendered_md_ = markdown2.markdown_path(path=self.path_,
                                                     extras=['fenced-code-blocks',
@@ -76,7 +81,7 @@ class Post(object):
     @staticmethod
     def collectPosts(post_dir):
         posts = [Post(f) for f in utils.list_dir(post_dir) if f.endswith('.md')]
-        posts.sort(key=lambda i: i.date(), reverse=True)
+        posts.sort(key=lambda i: i.post_date(), reverse=True)
         return posts
 
     @staticmethod
@@ -85,13 +90,12 @@ class Post(object):
         site_dir = config['site_dir']
 
         posts = Post.collectPosts(post_dir)
-        if config['args']['--public']:
-            posts = list(filter(lambda p: p.is_public(), posts))
 
         for post in posts:
-            html_fpath = post.relative_path()
-            utils.save_file(html_fpath, post.html())
-            print('[POST GEN]', post.title(), '==>', post.relative_path())
+            html_fpath = post.html_path()
+            if post.need_render():
+                utils.save_file(html_fpath, post.html())
+                print('[ GEN POST ]', post.title(), '==>', post.html_path())
 
         print('Total:', len(posts), 'posts')
         return posts

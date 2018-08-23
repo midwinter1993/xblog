@@ -17,7 +17,7 @@
           <ul class="list-group">
             {% for post in posts %}
             <li class="list-group-item">
-              <a href={{ post.relative_path() }}>{{ post.title() }}</a>
+              <a href={{ post.html_path() }}>{{ post.title() }}</a>
             </li>
             {% endfor %}
           </ul>

@@ -29,7 +29,7 @@ def load_file(fpath):
 
 def load_json(fpath):
     if not os.path.exists(fpath):
-        raise XExecption('Json file [%s] does not exist.' % fpath)
+        raise XExecption('Json file `%s` does not exist.' % fpath)
     return json.loads(load_file(fpath))
 
 
@@ -46,7 +46,7 @@ def base_name(fpath):
 
 def run_command(cmd, is_prompt=True):
     if is_prompt:
-        print('[RUN]', ' '.join(cmd))
+        print('[ RUN ]', ' '.join(cmd))
     p = subprocess.Popen(cmd,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
@@ -82,7 +82,6 @@ def find_package_dir():
     raise XExecption('This package not found under `%s`' % lib_dir)
 
 
-
 def list_dir(d):
     if not os.path.exists(d):
         print(d, 'not exists.')
@@ -101,7 +100,10 @@ def parent_dir(path):
 
 def mk_dir(dpath, is_prompt=True):
     if is_prompt:
-        print('[MK DIR]', dpath)
+        if os.path.exists(dpath):
+            print('[ MK DIR ]', dpath, '*EXISTS*')
+        else:
+            print('[ MK DIR ]', dpath)
     run_command(['mkdir', '-p', dpath], False)
 
 
@@ -114,18 +116,18 @@ def _remove(path):
 
 def rm_dir(dpath, is_prompt=True):
     if is_prompt:
-        print('[RM DIR]', dpath)
+        print('[ RM DIR ]', dpath)
     _remove(dpath)
 
 
 def rm_file(fpath, is_prompt=True):
     if is_prompt:
-        print('[RM FILE]', fpath)
+        print('[ RM FILE ]', fpath)
     _remove(fpath)
 
 
 def clean_dir(dpath):
-    print('[CLEAN DIR]', dpath)
+    print('[ CLEAN DIR ]', dpath)
     if os.path.exists(dpath):
         rm_dir(dpath, False)
         mk_dir(dpath, False)
@@ -145,7 +147,7 @@ def _prepare_paths(from_path, to_path, is_overwrite):
     if os.path.exists(to_path):
         if is_overwrite:
             rm_dir(to_path, False)
-            print('[OVERWRITE]', to_path)
+            print('[ OVERWRITE ]', to_path)
         else:
             raise XExecption(to_path + ' exists.')
 
@@ -162,19 +164,25 @@ def _copy(from_path, to_path, is_overwrite=False):
 
 def move_dir(from_path, to_path):
     _move(from_path, to_path, is_overwrite=True)
-    print('[MOVE DIR] from `%s` to `%s`' % (from_path, to_path))
+    print('[ MOVE DIR ] from `%s` to `%s`' % (from_path, to_path))
 
 
 def move_file(from_path, to_path):
     _move(from_path, to_path, is_overwrite=True)
-    print('[MOVE FILE] from `%s` to `%s`' % (from_path, to_path))
+    print('[ MOVE FILE ] from `%s` to `%s`' % (from_path, to_path))
 
 
 def copy_dir(from_path, to_path):
     _copy(from_path, to_path, is_overwrite=True)
-    print('[COPY DIR] from `%s` to `%s`' % (from_path, to_path))
+    print('[ COPY DIR ] from `%s` to `%s`' % (from_path, to_path))
 
 
 def copy_file(from_path, to_path):
     _copy(from_path, to_path, is_overwrite=True)
-    print('[COPY FILE] from `%s` to `%s`' % (from_path, to_path))
+    print('[ COPY FILE ] from `%s` to `%s`' % (from_path, to_path))
+
+
+def file_mod_tsc(fpath):
+    if not os.path.exists(fpath):
+        raise XExecption(fpath + ' does not exists.')
+    return os.path.getmtime(fpath)

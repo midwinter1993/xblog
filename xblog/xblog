@@ -4,10 +4,16 @@
 '''
 Usage:
     xblog create [<name>]
-    xblog build [--public]
+    xblog build
     xblog new <title>
     xblog clean
     xblog publish
+
+    xblog --version
+
+Options:
+    -h --help     Show this screen.
+    -v --version  Show version.
 '''
 
 
@@ -83,7 +89,7 @@ def new_post(title):
         return
     post_meta = ('---\n'
                  'tag: post\n'
-                 'type: private\n'
+                 'type: normal\n'
                  '---\n'
                  '\n')
     with open(fpath, 'w') as fp:
@@ -107,7 +113,7 @@ def publish():
 
 
 if __name__ == "__main__":
-    args = docopt.docopt(__doc__)
+    args = docopt.docopt(__doc__, version='xblog 0.2')
     if args['create']:
         create(args)
     elif args['build']:
